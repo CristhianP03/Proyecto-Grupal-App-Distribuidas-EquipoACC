@@ -1,0 +1,127 @@
+\documentclass[12pt, a4paper]{article}
+
+%% --- Paquetes ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+
+
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+
+\pagestyle{plain}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+
+    {\Large\bfseries
+        Universidad Técnica Estatal de Quevedo\\[0.4cm]}
+
+    {\normalsize Facultad de Ciencias de la Computación y Diseño Gráfico\\[0.1cm]
+     Carrera de Ingeniería en Software\\[2cm]}
+
+    \rule{\linewidth}{1.5pt}\\[0.4cm]
+    {\LARGE\bfseries
+        Sistema de Gestión de Solicitudes\\[0.2cm]
+        para Soporte Técnico de Internet}\\[0.4cm]
+    \rule{\linewidth}{1.5pt}\\[1.5cm]
+
+    {\large\bfseries Propuesta de Proyecto para Aplicaciones Distribuidas\\[2cm]}
+
+    %% --- Integrantes como lista ---
+    \begin{flushleft}
+        \textbf{Equipo de trabajo:}\\[0.4cm]
+        \hspace{1cm}
+        \begin{minipage}{0.85\textwidth}
+            \begin{itemize}
+                \setlength{\itemsep}{0.3cm}
+                \item Pacheco Cárdenas Cristhian Daniel \quad --- \quad Arquitecto
+                \item Carpio Mendoza Carlos José \quad --- \quad Líder de Desarrollo
+                \item Álvarez Párraga Jeremy Alexis \quad --- \quad Responsable de Calidad
+                \item Cando Moreno Robinson Rodrigo \quad --- \quad Responsable de Documentación
+            \end{itemize}
+        \end{minipage}
+    \end{flushleft}
+
+    \vspace{1.5cm}
+
+    %% --- Datos del curso ---
+    \begin{flushleft}
+        \hspace{1cm}
+        \begin{tabular}{ll}
+            \textbf{Docente:} & Gleiston Cicerón Guerrero Ulloa \\[0.3cm]
+            \textbf{Período Académico:} & Séptimo Semestre \\[0.3cm]
+            \textbf{Fecha de Entrega:} & 27 de Mayo 2026 \\
+        \end{tabular}
+    \end{flushleft}
+
+    \vfill
+    {\small Quevedo -- Ecuador \quad | \quad 2026}
+\end{titlepage}
+
+
+\newpage
+\onehalfspacing
+
+\section{Resumen Ejecutivo}
+
+\subsection{Problema que se resuelve}
+
+Muchas organizaciones, especialmente de tamaño pequeño y mediano, gestionan
+sus solicitudes de soporte técnico a través de canales informales como correos
+electrónicos, llamadas telefónicas o mensajería instantánea. Esta forma de
+trabajar genera desorganización, pérdida de información y tiempos de respuesta
+prolongados. El presente proyecto propone un \textbf{Sistema de Gestión de
+Solicitudes para Soporte Técnico de Internet}, orientado a formalizar y
+estructurar el proceso de atención de incidencias relacionadas con la
+conectividad a Internet dentro de entornos organizacionales.
+
+\vspace{0.5cm}
+
+\subsection{Usuarios del sistema}
+
+El sistema está dirigido a organizaciones que ofrecen o dependen de servicios
+de Internet y que necesitan un mecanismo ordenado para gestionar incidencias
+técnicas. Lo utilizarán tanto el cliente que reporta problemas como el equipo
+técnico encargado de resolverlos y el personal administrativo que supervisa y
+coordina el proceso de atención.
+
+\vspace{0.5cm}
+
+\subsection{Un sistema distribuido es la solución apropiada}
+
+Si esta aplicación se construyera como un sistema único y centralizado,
+todo dependería de un solo punto: si ese punto falla, el servicio deja de
+funcionar por completo.
+
+Un enfoque distribuido resuelve esto dividiendo la aplicación en partes
+separadas: la interfaz que ve el usuario, la lógica que procesa las
+solicitudes y la base de datos donde se guarda la información. Cada parte
+trabaja de forma independiente y se comunican entre sí. Esto trae beneficios
+directos: si una parte falla, las demás pueden seguir funcionando; si la
+cantidad de usuarios crece, se puede reforzar solo la parte que lo necesita;
+y si se requiere hacer un cambio, se modifica únicamente la parte
+correspondiente sin afectar el resto del sistema.
+
+\newpage
+
+\subsection{Alcance del período académico}
+
+Durante el período académico, el trabajo consistirá en tomar la aplicación web del Sistema de Gestión de Solicitudes para Soporte Técnico de Internet, ya existente, e identificar de qué manera puede reorganizarse bajo un enfoque distribuido. A partir de ese análisis, se irán aplicando gradualmente los conceptos trabajados a lo largo del semestre sobre su estructura y diseño: cómo se comunican sus componentes, cómo se organiza y distribuye su información, y de qué forma puede estructurarse en capas independientes.
+
+La idea es transformar la aplicación web original en un ecosistema basado en microservicios desacoplados y orientados a eventos, dividiendo la plataforma en componentes individuales de autenticación, gestión de reportes, notificaciones e inteligencia artificial que interactuarán de forma que no esperarse el uno al otro para seguir trabajando.
+
+\end{document}
