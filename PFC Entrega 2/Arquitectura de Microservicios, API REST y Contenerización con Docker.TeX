@@ -1,0 +1,728 @@
+\documentclass[12pt, a4paper]{report}
+
+%% --- Paquetes ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{mdframed}
+\usepackage{graphicx}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+\definecolor{grisclaro}{RGB}{245,245,245}
+\definecolor{griscode}{RGB}{230,230,230}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  captionpos=b,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1
+           {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1
+           {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1
+           {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1
+}
+
+\pagestyle{plain}
+
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\hypersetup{colorlinks=false, hidelinks}
+
+\begin{document}
+\onehalfspacing
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{0.5cm}
+
+  {\Large\bfseries Universidad Técnica Estatal de Quevedo\\[0.4cm]}
+  {\normalsize Facultad de Ciencias de la Computación y Diseño Gráfico\\[0.1cm]
+   Carrera de Ingeniería en Software\\[1.5cm]}
+
+  \rule{\linewidth}{1.5pt}\\[0.4cm]
+  {\LARGE\bfseries
+    Sistema de Gestión de Solicitudes\\[0.2cm]
+    para Soporte Técnico de Internet}\\[0.4cm]
+  \rule{\linewidth}{1.5pt}\\[1cm]
+
+  {\large\bfseries Entrega 2 --- Diseño de Arquitectura de Microservicios\\[0.3cm]}
+  {\normalsize Versión 2.0\\[1.5cm]}
+
+  \begin{flushleft}
+    \textbf{Equipo de trabajo:}\\[0.4cm]
+    \hspace{1cm}
+    \begin{minipage}{0.85\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{0.3cm}
+        \item Pacheco Cárdenas Cristhian Daniel \quad --- \quad Arquitecto
+        \item Carpio Mendoza Carlos José \quad --- \quad Líder de Desarrollo
+        \item Álvarez Párraga Jeremy Alexis \quad --- \quad Responsable de Calidad
+        \item Cando Moreno Robinson Rodrigo \quad --- \quad Responsable de Documentación
+      \end{itemize}
+    \end{minipage}
+  \end{flushleft}
+
+  \vspace{1cm}
+
+  \begin{flushleft}
+    \hspace{1cm}
+    \begin{tabular}{ll}
+      \textbf{Docente:}            & Gleiston Cicerón Guerrero Ulloa \\[0.3cm]
+      \textbf{Asignatura:}         & Aplicaciones Distribuidas \\[0.3cm]
+      \textbf{Período Académico:}  & Séptimo Semestre \\[0.3cm]
+      \textbf{Fecha de Entrega:}   & Junio 2026 \\
+    \end{tabular}
+  \end{flushleft}
+
+  \vfill
+  {\small Quevedo -- Ecuador \quad | \quad 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\chapter*{Entrega 1: Propuesta Inicial del Proyecto}
+\addcontentsline{toc}{chapter}{Entrega 1: Propuesta Inicial del Proyecto}
+
+\section*{Resumen Ejecutivo}
+
+\subsection*{Problema que se resuelve}
+
+Muchas organizaciones, especialmente de tamaño pequeño y mediano, gestionan
+sus solicitudes de soporte técnico a través de canales informales como correos
+electrónicos, llamadas telefónicas o mensajería instantánea. Esta forma de
+trabajar genera desorganización, pérdida de información y tiempos de respuesta
+prolongados. El presente proyecto propone un \textbf{Sistema de Gestión de
+Solicitudes para Soporte Técnico de Internet}, orientado a formalizar y
+estructurar el proceso de atención de incidencias relacionadas con la
+conectividad a Internet dentro de entornos organizacionales.
+
+\vspace{0.5cm}
+
+\subsection*{Usuarios del sistema}
+
+El sistema está dirigido a organizaciones que ofrecen o dependen de servicios
+de Internet y que necesitan un mecanismo ordenado para gestionar incidencias
+técnicas. Lo utilizarán tanto el cliente que reporta problemas como el equipo
+técnico encargado de resolverlos y el personal administrativo que supervisa y
+coordina el proceso de atención.
+
+\vspace{0.5cm}
+
+\subsection*{Un sistema distribuido es la solución apropiada}
+
+Si esta aplicación se construyera como un sistema único y centralizado,
+todo dependería de un solo punto: si ese punto falla, el servicio deja de
+funcionar por completo.
+
+Un enfoque distribuido resuelve esto dividiendo la aplicación en partes
+separadas: la interfaz que ve el usuario, la lógica que procesa las
+solicitudes y la base de datos donde se guarda la información. Cada parte
+trabaja de forma independiente y se comunican entre sí. Esto trae beneficios
+directos: si una parte falla, las demás pueden seguir funcionando; si la
+cantidad de usuarios crece, se puede reforzar solo la parte que lo necesita;
+y si se requiere hacer un cambio, se modifica únicamente la parte
+correspondiente sin afectar el resto del sistema.
+
+\newpage
+
+\subsection*{Alcance del período académico}
+
+Durante el período académico, el trabajo consistirá en tomar la aplicación web del Sistema de Gestión de Solicitudes para Soporte Técnico de Internet, ya existente, e identificar de qué manera puede reorganizarse bajo un enfoque distribuido. A partir de ese análisis, se irán aplicando gradualmente los conceptos trabajados a lo largo del semestre sobre su estructura y diseño: cómo se comunican sus componentes, cómo se organiza y distribuye su información, y de qué forma puede estructurarse en capas independientes.
+
+La idea es transformar la aplicación web original en un ecosistema basado en microservicios desacoplados y orientados a eventos, dividiendo la plataforma en componentes individuales de autenticación, gestión de reportes, notificaciones e inteligencia artificial que interactuarán de forma que no esperarse el uno al otro para seguir trabajando.
+
+\newpage
+
+\section{Mejora de decisiones tomadas}
+
+\begin{longtable}{|p{2.8cm}|p{4.2cm}|p{5.8cm}|}
+\hline
+\textbf{Aspecto} & \textbf{Entrega 1} & \textbf{Entrega 2} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Aspecto} & \textbf{Entrega 1} & \textbf{Entrega 2} \\
+\hline
+\endhead
+Número de servicios &
+Mencionados de forma general, sin número exacto &
+Se definen 5 servicios con nombre, puerto y
+responsabilidad clara cada uno \\
+\hline
+Bases de datos &
+No se mencionaba nada &
+Cada servicio gestiona su propia base de datos.
+Se usa PostgreSQL para datos estructurados y
+MongoDB donde la información es más flexible \\
+\hline
+Comunicación &
+No estaba definida &
+REST para operaciones que necesitan respuesta
+inmediata; Kafka para avisos en segundo plano
+que no requieren esperar \\
+\hline
+Categorización &
+Mencionada como idea general &
+Se define un servicio dedicado que sugiere la
+categoría de una solicitud nueva basándose en
+las categorías ya registradas en el sistema \\
+\hline
+Punto de entrada &
+No definido &
+Se incorpora un API Gateway como puerta de
+entrada única para todos los clientes \\
+\hline
+Despliegue &
+No mencionado &
+Se define una estrategia con Docker para que
+cada servicio pueda ejecutarse de forma
+independiente en cualquier máquina \\
+\hline
+\end{longtable}
+
+\newpage
+
+\chapter{Arquitectura de Microservicios}
+
+\section{¿Qué es un microservicio?}
+
+Un microservicio es una parte pequeña y autónoma de un sistema más
+grande. En lugar de tener una sola aplicación que lo haga todo,
+el trabajo se divide en piezas. Cada pieza tiene su propia función,
+su propio código y su propia base de datos. Si una pieza falla, las
+demás siguen funcionando.
+
+\section{¿Por qué se eligió esta arquitectura para el proyecto?}
+
+La aplicación original del sistema de soporte técnico funciona como un
+bloque único. Eso tiene un problema, debido a que si hay un error en cualquier
+parte, todo el sistema puede quedar fuera de servicio.
+
+Se eligió una arquitectura de microservicios por tres razones concretas:
+
+\begin{enumerate}
+  \item \textbf{Separación de responsabilidades.} Cada parte del
+        sistema hace una sola cosa y la hace bien. El servicio de
+        autenticación no sabe nada de los tickets, y el servicio de
+        notificaciones no sabe nada de los usuarios.
+
+  \item \textbf{Independencia ante fallos.} Si el servicio de
+        notificaciones tiene un problema, los clientes aún pueden
+        crear solicitudes y los técnicos pueden atenderlas. El fallo
+        queda contenido.
+
+  \item \textbf{Facilidad para crecer.} Si en el futuro hay más
+        solicitudes de las que el sistema puede manejar, se puede
+        reforzar únicamente el servicio de solicitudes sin tocar
+        el resto.
+\end{enumerate}
+
+\newpage
+\section{Los cinco servicios del sistema}
+
+Después del análisis del equipo, se definieron cinco servicios.
+Cada uno corresponde a una responsabilidad distinta del sistema.
+
+\begin{longtable}{|p{3.8cm}|p{2cm}|p{2.2cm}|p{4.5cm}|}
+\hline
+\textbf{Servicio} & \textbf{Puerto} & \textbf{Base de datos} &
+\textbf{¿Qué hace?} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Servicio} & \textbf{Puerto} & \textbf{Base de datos} &
+\textbf{¿Qué hace?} \\
+\hline
+\endhead
+auth-service & 8001 & PostgreSQL &
+Registra usuarios, verifica contraseñas y
+genera el token de acceso \\
+\hline
+ticket-service & 8002 & PostgreSQL &
+Crea, actualiza y cierra solicitudes de soporte.
+Es el servicio central del sistema \\
+\hline
+notification-service & 8003 & MongoDB &
+Envía avisos al cliente y al técnico cuando
+algo cambia en la solicitud \\
+\hline
+ai-service & 8004 & MongoDB &
+Sugiere automáticamente la categoría de una
+solicitud nueva comparando su descripción
+con las categorías existentes \\
+\hline
+report-service & 8005 & PostgreSQL &
+Muestra estadísticas: solicitudes atendidas,
+tiempos de respuesta y rendimiento por técnico \\
+\hline
+\end{longtable}
+
+
+\section{Cada servicio tiene su propia base de datos}
+
+Si todos los servicios compartieran una sola base de datos, estarían
+conectados entre sí de una forma invisible pero peligrosa y si ocurre un cambio
+en la estructura de la base de datos podría romper varios servicios
+al mismo tiempo, aunque ese cambio fuera pequeño.
+
+Al dar a cada servicio su propia base de datos, cada uno puede
+evolucionar de forma independiente. El equipo puede cambiar cómo
+guarda las solicitudes sin afectar en absoluto al servicio de
+notificaciones ni al de reportes.
+
+\section{Diagrama de la arquitectura}
+
+El siguiente diagrama muestra cómo se conectan todos los componentes
+del sistema. Los clientes siempre entran por el API Gateway. Los
+servicios que necesitan comunicarse entre sí lo hacen a través de
+Kafka cuando no requieren respuesta inmediata.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{diagrama_arquitectura.png}
+\caption{Diagrama de arquitectura del sistema distribuido}
+\end{figure}
+
+\newpage
+\section{La comunicación entre lo servicios}
+
+Los servicios se comunican de dos formas distintas, despendiendo de si la
+operación necesita una respuesta inmediata o no.
+
+\subsection{Comunicación directa (REST)}
+
+Cuando el cliente necesita una respuesta para continuar, se usa REST.
+Por ejemplo, para iniciar sesión el sistema debe confirmar de inmediato
+si las credenciales son correctas. No puede esperar. Lo mismo ocurre
+cuando se crea una solicitud: el cliente necesita recibir el número
+de su caso de forma instantánea.
+
+Las rutas que usan REST son las que van del API Gateway hacia
+auth-service, ticket-service y report-service.
+
+\subsection{Comunicación por eventos (Kafka)}
+
+Cuando una operación puede resolverse en segundo plano sin que el
+cliente espere, se usa Apache Kafka. Kafka funciona como un tablón
+de anuncios: un servicio publica un aviso y otros servicios lo
+recogen cuando pueden.
+
+Por ejemplo, cuando se crea una solicitud nueva:
+
+\begin{enumerate}
+  \item El ticket-service la registra y responde al cliente de
+        inmediato con el número de caso.
+  \item En paralelo, publica un aviso en Kafka diciendo
+        ``nueva solicitud creada''.
+  \item El ai-service recibe ese aviso y sugiere una categoría
+        en segundo plano.
+  \item El notification-service también lo recibe y le envía
+        un correo de confirmación al cliente.
+\end{enumerate}
+
+El cliente no espera ninguno de esos pasos adicionales. Ya tiene
+su número de caso y el resto ocurre de forma automática.
+
+\newpage
+\section{Los estados de una solicitud}
+
+Una solicitud pasa por cuatro estados a lo largo de su vida:
+
+\begin{enumerate}
+  \item \textbf{Pendiente:} La solicitud fue creada pero aún no
+        se le asignó ningún técnico.
+  \item \textbf{En Proceso:} Un técnico está trabajando en el caso.
+  \item \textbf{Resuelta:} El técnico registró la solución.
+  \item \textbf{Cerrada:} El caso quedó formalmente cerrado.
+\end{enumerate}
+
+Cada cambio de estado queda registrado automáticamente en el
+historial de la solicitud, junto con la fecha y el usuario que
+realizó el cambio.
+
+\newpage
+
+\chapter{Base de Datos del Sistema}
+
+
+\section{Estructura general}
+
+La base de datos original del sistema fue diseñada para una aplicación
+única. Al migrar a microservicios, esa estructura sirve como punto de
+partida para definir qué información pertenece a cada servicio.
+
+A continuación se describen las tablas más importantes del sistema,
+organizadas según el servicio al que corresponden.
+
+\section{Tablas del auth-service}
+
+Este servicio gestiona todo lo relacionado con identidad y acceso.
+Sus tablas principales son: usuario y rol.
+
+La tabla usuario guarda el nombre, correo, contraseña
+(cifrada) y el rol de cada persona. La tabla rol define
+los cuatro tipos de usuario del sistema: Superusuario, Administrador,
+Técnico y Cliente.
+
+Adicionalmente existen las tablas cliente y técnico,
+que extienden la información básica del usuario. La tabla cliente
+guarda la dirección del cliente. La tabla técnico guarda la
+especialidad, el nivel de soporte (L1, L2 o L3) y si está habilitado
+para recibir casos.
+
+\begin{longtable}{|p{3.5cm}|p{4cm}|p{5cm}|}
+\hline
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{¿Para qué sirve?} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{¿Para qué sirve?} \\
+\hline
+\endhead
+usuario &
+id, nombre, correo, contraseña, id\_rol &
+Centraliza la identidad de todos los usuarios \\
+\hline
+rol &
+id, nombre\_rol &
+Define los perfiles de acceso al sistema \\
+\hline
+cliente &
+id\_usuario, dirección &
+Extiende al usuario con información del cliente \\
+\hline
+técnico &
+id\_usuario, especialidad, nivel, habilitado &
+Extiende al usuario con información del técnico \\
+\hline
+\end{longtable}
+
+\section{Tablas del ticket-service}
+
+Este es el servicio central del sistema. Gestiona el ciclo de vida
+completo de cada solicitud de soporte.
+
+La tabla solicitud es el corazón: guarda la descripción del
+problema, la categoría, el cliente que la creó, la fecha y el estado
+actual. La tabla estado define los cuatro estados posibles.
+La tabla categoría contiene los tipos de problema que el
+sistema puede atender: Sin conexión a Internet, Baja velocidad
+y Cortes intermitentes.
+
+El historial de cambios de estado se guarda en la tabla
+\textbf{historial\_estado}, que registra automáticamente cada
+transición mediante un trigger en la base de datos.
+
+La tabla \textbf{asignacion\_solicitud} registra a qué técnico
+o grupo de técnicos se le asignó cada caso. La tabla
+\textbf{reporte\_solicitud} guarda el detalle de lo que el técnico
+hizo para resolver el problema.
+
+\begin{longtable}{|p{4cm}|p{4cm}|p{4.5cm}|}
+\hline
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{¿Para qué sirve?} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{¿Para qué sirve?} \\
+\hline
+\endhead
+solicitud &
+id, descripción, id\_categoría, id\_cliente, id\_estado\_actual &
+Registro principal de cada caso de soporte \\
+\hline
+estado &
+id, nombre\_estado &
+Define los estados: Pendiente, En Proceso, Resuelta, Cerrada \\
+\hline
+categoría &
+id, nombre\_categoría &
+Clasifica el tipo de problema reportado \\
+\hline
+historial\_estado &
+id, id\_solicitud, id\_estado, fecha\_hora\_cambio &
+Registra cada cambio de estado automáticamente \\
+\hline
+asignacion\_solicitud &
+id, id\_solicitud, id\_técnico, id\_grupo, fecha\_inicio &
+Vincula una solicitud con el técnico o grupo asignado \\
+\hline
+reporte\_solicitud &
+id, id\_solicitud, id\_técnico, detalle\_reporte &
+Documenta lo que se hizo para resolver el caso \\
+\hline
+adjunto &
+id, id\_solicitud, nombre\_archivo, tipo\_archivo &
+Archivos (PNG, JPG, PDF) adjuntados a una solicitud \\
+\hline
+\end{longtable}
+
+\section{Tablas del report-service}
+
+El servicio de reportes consulta información consolidada del sistema.
+Trabaja principalmente con los datos de solicitudes, asignaciones e
+historial para construir las métricas que el administrador necesita ver.
+
+En la arquitectura distribuida, este servicio tendrá acceso a una
+copia de lectura de los datos relevantes, actualizada a través de
+los eventos que publica el ticket-service en Kafka.
+
+\section{Tablas del notification-service}
+
+Este servicio no necesita acceder a las tablas principales del sistema.
+Recibe la información que necesita directamente desde los eventos de
+Kafka: el nombre del destinatario, el tipo de evento y el mensaje
+a enviar. Guarda únicamente el historial de notificaciones enviadas
+en su propia base de datos MongoDB.
+
+\newpage
+
+\chapter{Contrato del API REST}
+
+Cuando la aplicación web necesita pedirle algo al servidor por
+ejemplo, crear una solicitud o consultar su estado necesitan ponerse
+de acuerdo en cómo hablar. Ese acuerdo escrito
+se llama contrato del API.
+
+Definirlo antes de programar evita confusiones entre los miembros
+del equipo y facilita que el trabajo avance en paralelo: quien
+desarrolla la interfaz y quien desarrolla el servidor saben
+exactamente qué esperar del otro.
+
+\section{Reglas generales}
+
+Todas las rutas del sistema siguen las mismas convenciones:
+
+\begin{itemize}
+  \item Todas empiezan con \texttt{/api/v1/}
+  \item Las rutas protegidas requieren un token en el encabezado:\\
+        \texttt{Authorization: Bearer \{token\}}
+  \item Las respuestas siempre vienen en formato JSON
+  \item Se usan los códigos HTTP estándar: 200 (éxito), 201 (creado),
+        400 (datos incorrectos), 401 (sin permiso), 404 (no encontrado)
+\end{itemize}
+
+\section{Servicio de autenticación}
+
+\begin{longtable}{|p{1.8cm}|p{4.8cm}|p{4.2cm}|p{2.5cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endhead
+POST & /api/v1/auth/register &
+Crea una cuenta nueva & Público \\
+\hline
+POST & /api/v1/auth/login &
+Verifica credenciales y entrega el token & Público \\
+\hline
+POST & /api/v1/auth/logout &
+Cancela la sesión activa & Autenticado \\
+\hline
+GET  & /api/v1/auth/validate &
+Verifica si el token es válido & Solo interno \\
+\hline
+\end{longtable}
+
+\section{Servicio de solicitudes}
+
+\begin{longtable}{|p{1.8cm}|p{5.2cm}|p{3.8cm}|p{1.8cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endhead
+POST  & /api/v1/tickets &
+Registra una nueva solicitud & Cliente \\
+\hline
+GET   & /api/v1/tickets &
+Lista solicitudes según el rol del usuario & Todos \\
+\hline
+GET   & /api/v1/tickets/\{id\} &
+Muestra el detalle de una solicitud & Todos \\
+\hline
+PATCH & /api/v1/tickets/\{id\}/status &
+Cambia el estado de la solicitud & Técnico, Admin \\
+\hline
+POST  & /api/v1/tickets/\{id\}/assign &
+Asigna la solicitud a un técnico & Admin \\
+\hline
+POST  & /api/v1/tickets/\{id\}/comments &
+Agrega un comentario al caso & Todos \\
+\hline
+\end{longtable}
+
+\section{Servicio de reportes}
+
+\begin{longtable}{|p{1.8cm}|p{5.2cm}|p{3.8cm}|p{1.8cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{¿Qué hace?} &
+\textbf{Acceso} \\
+\hline
+\endhead
+GET & /api/v1/reports/volume &
+Cuántas solicitudes hubo en un período & Admin \\
+\hline
+GET & /api/v1/reports/technicians &
+Rendimiento por técnico & Admin \\
+\hline
+GET & /api/v1/reports/status &
+Solicitudes agrupadas por estado & Admin \\
+\hline
+\end{longtable}
+
+\newpage
+
+\chapter{Contenerización con Docker}
+
+\section{¿Qué es Docker?}
+
+Docker es una herramienta que permite empaquetar un servicio junto
+con todo lo que necesita para funcionar: su código, sus librerías y
+su configuración. Ese paquete se llama contenedor.
+
+La ventaja es que un contenedor funciona exactamente igual en
+cualquier computadora donde Docker esté instalado. Esto elimina el
+problema clásico del desarrollo de software: ``en mi computadora
+sí funciona''.
+
+\section{Importancia de Docker}
+
+El sistema tiene cinco microservicios, cada uno con tecnologías
+distintas: algunos en Java, uno en Python, uno en Node.js. Sin Docker,
+cada integrante del equipo tendría que instalar y configurar todas
+esas tecnologías manualmente en su computadora, con el riesgo de que
+las versiones no coincidan y algo falle.
+
+Con Docker, cada servicio viene empaquetado y listo. Con un solo
+comando se levanta todo el sistema completo en cualquier máquina,
+sin instalaciones adicionales.
+
+\section{Contenedores}
+
+Cada uno de los cinco microservicios tendrá su propio contenedor.
+Las bases de datos también corren en contenedores separados.
+Todos se conectan a través de una red interna privada, de modo que
+se pueden comunicar entre sí usando el nombre del servicio como
+dirección, sin necesidad de IPs fijas.
+\newpage
+
+\begin{longtable}{|p{4.5cm}|p{3cm}|p{5cm}|}
+\hline
+\textbf{Contenedor} & \textbf{Puerto expuesto} & \textbf{Visibilidad} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Contenedor} & \textbf{Puerto expuesto} & \textbf{Visibilidad} \\
+\hline
+\endhead
+api-gateway          & 8080 & Accesible desde el exterior \\
+\hline
+auth-service         & 8001 & Solo en desarrollo \\
+\hline
+ticket-service       & 8002 & Solo en desarrollo \\
+\hline
+report-service       & 8005 & Solo en desarrollo \\
+\hline
+notification-service & ---  & Solo red interna \\
+\hline
+ai-service           & ---  & Solo red interna \\
+\hline
+\end{longtable}
+
+En un entorno de producción real, solo el API Gateway estaría
+expuesto hacia el exterior. Los demás serían invisibles desde fuera.
+
+
+\newpage
+
+\chapter{Conclusiones}
+
+Esta segunda entrega convirtió la propuesta general de la Entrega 1
+en un diseño técnico concreto. El equipo pasó de tener una idea de
+alto nivel a tener decisiones específicas y documentadas sobre cómo
+está organizado el sistema, cómo se comunican sus partes, cómo
+gestiona sus datos y cómo se despliega.
+
+Los resultados más importantes de esta etapa son:
+
+\begin{enumerate}
+  \item El sistema quedó dividido en cinco microservicios con
+        responsabilidades claras y bases de datos independientes,
+        eliminando el acoplamiento que existía en la aplicación
+        original.
+
+  \item Se definió un esquema de comunicación claro: REST para
+        operaciones que necesitan respuesta inmediata y Kafka para
+        eventos que pueden procesarse en segundo plano.
+
+  \item El diseño de la base de datos original fue analizado y
+        distribuido entre los servicios correspondientes, respetando
+        la estructura ya existente del sistema.
+
+  \item La estrategia de contenerización con Docker garantiza que
+        cualquier integrante del equipo pueda levantar el sistema
+        completo de forma reproducible, sin depender de
+        configuraciones manuales.
+
+  \item El contrato del API REST quedó definido antes de comenzar
+        la implementación, lo que permitirá que el equipo trabaje
+        en paralelo durante la Semana 7.
+\end{enumerate}
+
+\newpage
+
+\section{Repositorio en GitHub}
+
+El programa de esta práctica práctica se encuentra disponible en:
+
+\url{https://github.com/CristhianP03/Proyecto-Grupal-App-Distribuidas-EquipoACC.git}
+
+
+\section*{Rol de la Inteligencia Artificial}
+Durante la elaboración de este informe se utilizó una herramienta de
+inteligencia artificial como apoyo en la redacción. Su participación se limitó
+a correcciones menores de texto y estructura, como mejorar la redacción de
+algunos párrafos, reorganizar el orden de ciertas explicaciones y unificar
+el estilo del documento.
+
+\end{document}
